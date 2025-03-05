@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+	<types>
+		<members>UnitSearch</members>
+		<name>ApexClass</name>
+	</types>
+	<types>
+		<members>*</members>
+		<name>Bot</name>
+	</types>
+	<types>
+		<members>Fetch_Tenant_Records_Based_On_Agreement_Renewal</members>
+		<members>Filter_Tenants</members>
+		<members>Get_All_Tenants</members>
+		<members>Get_All_Unit</members>
+		<members>Get_Customer_Details</members>
+		<members>Get_Payment_Details_On_Status</members>
+		<members>Get_Property_Records</members>
+		<members>Get_Tenant_Payment_Details</members>
+		<members>Get_Unit_Related_to_Property</members>
+		<members>Get_Units</members>
+		<members>Get_Units_Related_to_a_property</members>
+		<members>Payment_Details_For_Current_Month</members>
+		<members>Tenent_Renewal_Reminder_Before_15_Days</members>
+		<name>Flow</name>
+	</types>
+	<types>
+		<members>Contact</members>
+		<members>Payment_Detail__c</members>
+		<members>Property__c</members>
+		<members>Tenant_Info__c</members>
+		<members>Unit__c</members>
+		<name>TopicsForObjects</name>
+	</types>
+	<version>62.0</version>
+</Package>
