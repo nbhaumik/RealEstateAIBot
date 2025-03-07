@@ -3,31 +3,21 @@
     <apiVersion>63.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
-        <name>CurrentMonthPayments</name>
-        <label>CurrentMonthPayments</label>
+        <name>Assign_payment_records</name>
+        <label>Assign payment records</label>
         <locationX>176</locationX>
-        <locationY>242</locationY>
+        <locationY>350</locationY>
         <assignmentItems>
-            <assignToReference>PaymentDetails</assignToReference>
+            <assignToReference>PaymentRecords</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>GetCurrentMonthsPaymentDetails</elementReference>
+                <elementReference>Get_Payment_Records</elementReference>
             </value>
         </assignmentItems>
     </assignments>
     <environments>Default</environments>
-    <formulas>
-        <name>CurrentMonthEndDate</name>
-        <dataType>Date</dataType>
-        <expression>DATE(YEAR(TODAY()), MONTH(TODAY()) + 1, 1) - 1</expression>
-    </formulas>
-    <formulas>
-        <name>CurrentMonthStartDate</name>
-        <dataType>Date</dataType>
-        <expression>DATE(YEAR(TODAY()), MONTH(TODAY()), 1)</expression>
-    </formulas>
-    <interviewLabel>Payment Details For Current Month {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Payment Details For Current Month</label>
+    <interviewLabel>Get Payment Records for Units {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Get Payment Records for Units</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -48,53 +38,71 @@
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
     <recordLookups>
-        <name>GetCurrentMonthsPaymentDetails</name>
-        <label>GetCurrentMonthsPaymentDetails</label>
+        <name>Get_Payment_Records</name>
+        <label>Get Payment Records</label>
         <locationX>176</locationX>
-        <locationY>134</locationY>
+        <locationY>242</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>CurrentMonthPayments</targetReference>
+            <targetReference>Assign_payment_records</targetReference>
         </connector>
-        <filterLogic>and</filterLogic>
+        <filterLogic>or</filterLogic>
         <filters>
-            <field>Last_Pay_Date__c</field>
-            <operator>GreaterThanOrEqualTo</operator>
+            <field>Unit__c</field>
+            <operator>EqualTo</operator>
             <value>
-                <elementReference>CurrentMonthStartDate</elementReference>
-            </value>
-        </filters>
-        <filters>
-            <field>Last_Pay_Date__c</field>
-            <operator>LessThanOrEqualTo</operator>
-            <value>
-                <elementReference>CurrentMonthEndDate</elementReference>
+                <elementReference>Get_Units.Id</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>false</getFirstRecordOnly>
         <object>Payment_Detail__c</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
+    <recordLookups>
+        <name>Get_Units</name>
+        <label>Get Units</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_Payment_Records</targetReference>
+        </connector>
+        <filterLogic>or</filterLogic>
+        <filters>
+            <field>Name</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>InputUnit</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Unit_Name__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>InputUnit</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Unit__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
     <start>
         <locationX>50</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>GetCurrentMonthsPaymentDetails</targetReference>
+            <targetReference>Get_Units</targetReference>
         </connector>
     </start>
     <status>Active</status>
     <variables>
-        <name>InputVariable</name>
+        <name>InputUnit</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>
         <isOutput>false</isOutput>
-        <value>
-            <stringValue>Month</stringValue>
-        </value>
     </variables>
     <variables>
-        <name>PaymentDetails</name>
+        <name>PaymentRecords</name>
         <dataType>SObject</dataType>
         <isCollection>true</isCollection>
         <isInput>false</isInput>

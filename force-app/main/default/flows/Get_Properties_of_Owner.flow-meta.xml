@@ -3,31 +3,22 @@
     <apiVersion>63.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
-        <name>CurrentMonthPayments</name>
-        <label>CurrentMonthPayments</label>
+        <description>Storing the related properties of an owner</description>
+        <name>Store_Related_Propeties</name>
+        <label>Store Related Propeties</label>
         <locationX>176</locationX>
-        <locationY>242</locationY>
+        <locationY>350</locationY>
         <assignmentItems>
-            <assignToReference>PaymentDetails</assignToReference>
+            <assignToReference>RelatedProperties</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>GetCurrentMonthsPaymentDetails</elementReference>
+                <elementReference>Get_Properties_Of_Specific_Owner</elementReference>
             </value>
         </assignmentItems>
     </assignments>
     <environments>Default</environments>
-    <formulas>
-        <name>CurrentMonthEndDate</name>
-        <dataType>Date</dataType>
-        <expression>DATE(YEAR(TODAY()), MONTH(TODAY()) + 1, 1) - 1</expression>
-    </formulas>
-    <formulas>
-        <name>CurrentMonthStartDate</name>
-        <dataType>Date</dataType>
-        <expression>DATE(YEAR(TODAY()), MONTH(TODAY()), 1)</expression>
-    </formulas>
-    <interviewLabel>Payment Details For Current Month {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Payment Details For Current Month</label>
+    <interviewLabel>Get Properties of Owner {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Get Properties of Owner</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -48,57 +39,68 @@
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
     <recordLookups>
-        <name>GetCurrentMonthsPaymentDetails</name>
-        <label>GetCurrentMonthsPaymentDetails</label>
+        <name>Get_Properties_Of_Specific_Owner</name>
+        <label>Get Properties Of Specific Owner</label>
+        <locationX>176</locationX>
+        <locationY>242</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Store_Related_Propeties</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Property_Owner__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Property_Owner.Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>Property__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Property_Owner</name>
+        <label>Get Property Owner</label>
         <locationX>176</locationX>
         <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>CurrentMonthPayments</targetReference>
+            <targetReference>Get_Properties_Of_Specific_Owner</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
-            <field>Last_Pay_Date__c</field>
-            <operator>GreaterThanOrEqualTo</operator>
+            <field>Name</field>
+            <operator>Contains</operator>
             <value>
-                <elementReference>CurrentMonthStartDate</elementReference>
+                <elementReference>PropertyOwner</elementReference>
             </value>
         </filters>
-        <filters>
-            <field>Last_Pay_Date__c</field>
-            <operator>LessThanOrEqualTo</operator>
-            <value>
-                <elementReference>CurrentMonthEndDate</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>false</getFirstRecordOnly>
-        <object>Payment_Detail__c</object>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Account</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <start>
         <locationX>50</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>GetCurrentMonthsPaymentDetails</targetReference>
+            <targetReference>Get_Property_Owner</targetReference>
         </connector>
     </start>
     <status>Active</status>
     <variables>
-        <name>InputVariable</name>
+        <name>PropertyOwner</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>
         <isOutput>false</isOutput>
-        <value>
-            <stringValue>Month</stringValue>
-        </value>
     </variables>
     <variables>
-        <name>PaymentDetails</name>
+        <name>RelatedProperties</name>
         <dataType>SObject</dataType>
         <isCollection>true</isCollection>
         <isInput>false</isInput>
         <isOutput>true</isOutput>
-        <objectType>Payment_Detail__c</objectType>
+        <objectType>Property__c</objectType>
     </variables>
 </Flow>
