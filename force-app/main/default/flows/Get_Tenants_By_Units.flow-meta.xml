@@ -3,22 +3,22 @@
     <apiVersion>63.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
-        <name>Assigning_units</name>
-        <label>Assigning units</label>
+        <name>Tenant_Record_List</name>
+        <label>Tenant Record List</label>
         <locationX>176</locationX>
         <locationY>350</locationY>
         <assignmentItems>
-            <assignToReference>UnitRecords</assignToReference>
+            <assignToReference>TenantRecordCollection</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Unit_Retrieve</elementReference>
+                <elementReference>get_Tenants</elementReference>
             </value>
         </assignmentItems>
     </assignments>
-    <description>Added fields customised</description>
+    <description>Customised field retrieval</description>
     <environments>Default</environments>
-    <interviewLabel>Get Unit Related to Property {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Get Unit Related to Property</label>
+    <interviewLabel>Get Tenants By Units {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Get Tenants By Units</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -39,75 +39,74 @@
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
     <recordLookups>
-        <name>Get_Property</name>
-        <label>Get Property Relations</label>
-        <locationX>176</locationX>
-        <locationY>134</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Unit_Retrieve</targetReference>
-        </connector>
-        <filterLogic>or</filterLogic>
-        <filters>
-            <field>Name</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>Input_Property</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Property__c</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
-        <name>Unit_Retrieve</name>
-        <label>Unit Retrieve</label>
+        <name>get_Tenants</name>
+        <label>get Tenants</label>
         <locationX>176</locationX>
         <locationY>242</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Assigning_units</targetReference>
+            <targetReference>Tenant_Record_List</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
-            <field>Property_Name__c</field>
+            <field>Unit__c</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>Get_Property.Id</elementReference>
+                <elementReference>get_Units.Id</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>false</getFirstRecordOnly>
-        <object>Unit__c</object>
+        <object>Tenant_Info__c</object>
         <queriedFields>Id</queriedFields>
-        <queriedFields>Unit_Name__c</queriedFields>
-        <queriedFields>Unit_Status__c</queriedFields>
         <queriedFields>Name</queriedFields>
-        <queriedFields>Bedrooms__c</queriedFields>
-        <queriedFields>Bathrooms__c</queriedFields>
-        <queriedFields>Rent_Amount__c</queriedFields>
+        <queriedFields>Present_Leasee__c</queriedFields>
+        <queriedFields>Agreement_From__c</queriedFields>
+        <queriedFields>Agreement_Upto__c</queriedFields>
+        <queriedFields>Unit__c</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>get_Units</name>
+        <label>get Units</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>get_Tenants</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Name</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>unitName</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Unit__c</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <start>
         <locationX>50</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Get_Property</targetReference>
+            <targetReference>get_Units</targetReference>
         </connector>
     </start>
     <status>Active</status>
     <variables>
-        <name>Input_Property</name>
-        <dataType>String</dataType>
-        <isCollection>false</isCollection>
-        <isInput>true</isInput>
-        <isOutput>false</isOutput>
-    </variables>
-    <variables>
-        <name>UnitRecords</name>
+        <name>TenantRecordCollection</name>
         <dataType>SObject</dataType>
         <isCollection>true</isCollection>
         <isInput>false</isInput>
         <isOutput>true</isOutput>
-        <objectType>Unit__c</objectType>
+        <objectType>Tenant_Info__c</objectType>
+    </variables>
+    <variables>
+        <name>unitName</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
     </variables>
 </Flow>

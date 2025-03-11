@@ -15,6 +15,7 @@
             </value>
         </assignmentItems>
     </assignments>
+    <description>customized fields</description>
     <environments>Default</environments>
     <interviewLabel>Get Units {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Get Units on Status Rent</label>
@@ -63,6 +64,11 @@
         </filters>
         <getFirstRecordOnly>false</getFirstRecordOnly>
         <object>Unit__c</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Name</queriedFields>
+        <queriedFields>Unit_Name__c</queriedFields>
+        <queriedFields>Rent_Amount__c</queriedFields>
+        <queriedFields>Unit_Status__c</queriedFields>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <start>

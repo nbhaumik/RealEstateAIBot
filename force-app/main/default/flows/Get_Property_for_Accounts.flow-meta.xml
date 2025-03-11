@@ -3,26 +3,21 @@
     <apiVersion>63.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
-        <name>tenant_Record_Assignmnet</name>
-        <label>tenant Record Assignmnet</label>
+        <name>Store_Properties</name>
+        <label>Store Properties</label>
         <locationX>176</locationX>
-        <locationY>242</locationY>
+        <locationY>350</locationY>
         <assignmentItems>
-            <assignToReference>tenantRecordCollection</assignToReference>
+            <assignToReference>PropertyList</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>get_Tenent_Records</elementReference>
+                <elementReference>Get_Related_Properties</elementReference>
             </value>
         </assignmentItems>
     </assignments>
     <environments>Default</environments>
-    <formulas>
-        <name>FifteenDaysFromToday</name>
-        <dataType>Date</dataType>
-        <expression>TODAY() + 15</expression>
-    </formulas>
-    <interviewLabel>fet {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Fetch Tenant Records Based On Agreement Renewal</label>
+    <interviewLabel>Get Property for Accounts {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Get Property for Accounts</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -43,47 +38,68 @@
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
     <recordLookups>
-        <name>get_Tenent_Records</name>
-        <label>get Tenent Records</label>
+        <name>Get_account_Id</name>
+        <label>Get account Id</label>
         <locationX>176</locationX>
         <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>tenant_Record_Assignmnet</targetReference>
+            <targetReference>Get_Related_Properties</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
-            <field>Agreement_Upto__c</field>
-            <operator>LessThanOrEqualTo</operator>
+            <field>Name</field>
+            <operator>Contains</operator>
             <value>
-                <elementReference>FifteenDaysFromToday</elementReference>
+                <elementReference>inputAccount</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Account</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Related_Properties</name>
+        <label>Get Related Properties</label>
+        <locationX>176</locationX>
+        <locationY>242</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Store_Properties</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Property_Owner__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_account_Id.Id</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>false</getFirstRecordOnly>
-        <object>Tenant_Info__c</object>
+        <object>Property__c</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <start>
         <locationX>50</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>get_Tenent_Records</targetReference>
+            <targetReference>Get_account_Id</targetReference>
         </connector>
     </start>
     <status>Active</status>
     <variables>
-        <name>tenantDate</name>
-        <dataType>Date</dataType>
-        <isCollection>true</isCollection>
+        <name>inputAccount</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
         <isInput>true</isInput>
         <isOutput>false</isOutput>
     </variables>
     <variables>
-        <name>tenantRecordCollection</name>
+        <name>PropertyList</name>
         <dataType>SObject</dataType>
         <isCollection>true</isCollection>
         <isInput>false</isInput>
         <isOutput>true</isOutput>
-        <objectType>Tenant_Info__c</objectType>
+        <objectType>Property__c</objectType>
     </variables>
 </Flow>

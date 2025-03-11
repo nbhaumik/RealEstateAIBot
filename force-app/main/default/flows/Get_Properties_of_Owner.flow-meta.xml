@@ -57,6 +57,12 @@
         </filters>
         <getFirstRecordOnly>false</getFirstRecordOnly>
         <object>Property__c</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Name</queriedFields>
+        <queriedFields>Area__c</queriedFields>
+        <queriedFields>Type__c</queriedFields>
+        <queriedFields>City__c</queriedFields>
+        <queriedFields>Property_Owner__c</queriedFields>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>

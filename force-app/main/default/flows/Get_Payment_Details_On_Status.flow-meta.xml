@@ -57,6 +57,13 @@
         </filters>
         <getFirstRecordOnly>false</getFirstRecordOnly>
         <object>Payment_Detail__c</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Name</queriedFields>
+        <queriedFields>Tenant__c</queriedFields>
+        <queriedFields>Unit__c</queriedFields>
+        <queriedFields>Amount__c</queriedFields>
+        <queriedFields>Last_Pay_Date__c</queriedFields>
+        <queriedFields>Payment_Status__c</queriedFields>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <start>

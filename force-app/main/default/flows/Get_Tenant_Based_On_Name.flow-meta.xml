@@ -3,26 +3,21 @@
     <apiVersion>63.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
-        <name>tenant_Record_Assignmnet</name>
-        <label>tenant Record Assignmnet</label>
+        <name>Tenant_Record_Collection</name>
+        <label>Tenant Record Collection</label>
         <locationX>176</locationX>
-        <locationY>242</locationY>
+        <locationY>350</locationY>
         <assignmentItems>
-            <assignToReference>tenantRecordCollection</assignToReference>
+            <assignToReference>TenantRecordsBasedOnName</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>get_Tenent_Records</elementReference>
+                <elementReference>get_Tenants</elementReference>
             </value>
         </assignmentItems>
     </assignments>
     <environments>Default</environments>
-    <formulas>
-        <name>FifteenDaysFromToday</name>
-        <dataType>Date</dataType>
-        <expression>TODAY() + 15</expression>
-    </formulas>
-    <interviewLabel>fet {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Fetch Tenant Records Based On Agreement Renewal</label>
+    <interviewLabel>Get Tenant Based On Name {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Get Tenant Based On Name</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -43,20 +38,41 @@
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
     <recordLookups>
-        <name>get_Tenent_Records</name>
-        <label>get Tenent Records</label>
+        <name>get_Contacts</name>
+        <label>get Contacts</label>
         <locationX>176</locationX>
         <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>tenant_Record_Assignmnet</targetReference>
+            <targetReference>get_Tenants</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
-            <field>Agreement_Upto__c</field>
-            <operator>LessThanOrEqualTo</operator>
+            <field>Name</field>
+            <operator>EqualTo</operator>
             <value>
-                <elementReference>FifteenDaysFromToday</elementReference>
+                <elementReference>tenantName</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Contact</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>get_Tenants</name>
+        <label>get Tenants</label>
+        <locationX>176</locationX>
+        <locationY>242</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Tenant_Record_Collection</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Present_Leasee__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>get_Contacts.Id</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>false</getFirstRecordOnly>
@@ -67,19 +83,19 @@
         <locationX>50</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>get_Tenent_Records</targetReference>
+            <targetReference>get_Contacts</targetReference>
         </connector>
     </start>
     <status>Active</status>
     <variables>
-        <name>tenantDate</name>
-        <dataType>Date</dataType>
-        <isCollection>true</isCollection>
+        <name>tenantName</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
         <isInput>true</isInput>
         <isOutput>false</isOutput>
     </variables>
     <variables>
-        <name>tenantRecordCollection</name>
+        <name>TenantRecordsBasedOnName</name>
         <dataType>SObject</dataType>
         <isCollection>true</isCollection>
         <isInput>false</isInput>
