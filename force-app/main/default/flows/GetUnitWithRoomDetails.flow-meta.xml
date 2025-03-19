@@ -5,7 +5,7 @@
     <assignments>
         <name>RelatedUnitData</name>
         <label>RelatedUnitData</label>
-        <locationX>50</locationX>
+        <locationX>182</locationX>
         <locationY>350</locationY>
         <assignmentItems>
             <assignToReference>UnitRecords</assignToReference>
@@ -14,11 +14,14 @@
                 <elementReference>GetUnitWithBedRoomRecords</elementReference>
             </value>
         </assignmentItems>
+        <connector>
+            <targetReference>Checking_Property_Name</targetReference>
+        </connector>
     </assignments>
     <assignments>
         <name>RelatedUnitsWithBathrooms</name>
         <label>RelatedUnitsWithBathrooms</label>
-        <locationX>314</locationX>
+        <locationX>710</locationX>
         <locationY>350</locationY>
         <assignmentItems>
             <assignToReference>UnitRecords</assignToReference>
@@ -27,11 +30,94 @@
                 <elementReference>GetUnitWithBathRoomRecords</elementReference>
             </value>
         </assignmentItems>
+        <connector>
+            <targetReference>Copy_1_of_Checking_Property_Name</targetReference>
+        </connector>
     </assignments>
+    <collectionProcessors>
+        <name>Copy_1_of_Filter_units_by_Properties</name>
+        <elementSubtype>FilterCollectionProcessor</elementSubtype>
+        <label>Copy 1 of Filter units by Properties</label>
+        <locationX>578</locationX>
+        <locationY>674</locationY>
+        <assignNextValueToReference>currentItem_Filter_units_by_Properties</assignNextValueToReference>
+        <collectionProcessorType>FilterCollectionProcessor</collectionProcessorType>
+        <collectionReference>GetUnitWithBathRoomRecords</collectionReference>
+        <conditionLogic>and</conditionLogic>
+        <conditions>
+            <leftValueReference>currentItem_Filter_units_by_Properties.Property_Name__c</leftValueReference>
+            <operator>EqualTo</operator>
+            <rightValue>
+                <elementReference>Copy_2_of_Get_Property_ID.Id</elementReference>
+            </rightValue>
+        </conditions>
+    </collectionProcessors>
+    <collectionProcessors>
+        <name>Filter_units_by_Properties</name>
+        <elementSubtype>FilterCollectionProcessor</elementSubtype>
+        <label>Filter units by Properties</label>
+        <locationX>50</locationX>
+        <locationY>674</locationY>
+        <assignNextValueToReference>currentItem_Filter_units_by_Properties</assignNextValueToReference>
+        <collectionProcessorType>FilterCollectionProcessor</collectionProcessorType>
+        <collectionReference>GetUnitWithBedRoomRecords</collectionReference>
+        <conditionLogic>and</conditionLogic>
+        <conditions>
+            <leftValueReference>currentItem_Filter_units_by_Properties.Property_Name__c</leftValueReference>
+            <operator>EqualTo</operator>
+            <rightValue>
+                <elementReference>Get_Property_ID.Id</elementReference>
+            </rightValue>
+        </conditions>
+    </collectionProcessors>
+    <decisions>
+        <name>Checking_Property_Name</name>
+        <label>Checking Property Name</label>
+        <locationX>182</locationX>
+        <locationY>458</locationY>
+        <defaultConnectorLabel>Property Not Present</defaultConnectorLabel>
+        <rules>
+            <name>Property_Present</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Input_Property</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Property_ID</targetReference>
+            </connector>
+            <label>Property Present</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Copy_1_of_Checking_Property_Name</name>
+        <label>Copy 1 of Checking Property Name</label>
+        <locationX>710</locationX>
+        <locationY>458</locationY>
+        <defaultConnectorLabel>Property Not Present</defaultConnectorLabel>
+        <rules>
+            <name>Property_Present_2</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Input_Property</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Copy_2_of_Get_Property_ID</targetReference>
+            </connector>
+            <label>Property Present 2</label>
+        </rules>
+    </decisions>
     <decisions>
         <name>RequiredElement</name>
         <label>RequiredElement</label>
-        <locationX>314</locationX>
+        <locationX>644</locationX>
         <locationY>134</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
@@ -88,9 +174,55 @@
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
     <recordLookups>
+        <name>Copy_2_of_Get_Property_ID</name>
+        <label>Copy 2 of Get Property ID</label>
+        <locationX>578</locationX>
+        <locationY>566</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Copy_1_of_Filter_units_by_Properties</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Name</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Input_Property</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Property__c</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Name</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Property_ID</name>
+        <label>Get Property ID</label>
+        <locationX>50</locationX>
+        <locationY>566</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Filter_units_by_Properties</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Name</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Input_Property</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Property__c</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Name</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
         <name>GetUnitWithBathRoomRecords</name>
         <label>GetUnitWithBathRoomRecords</label>
-        <locationX>314</locationX>
+        <locationX>710</locationX>
         <locationY>242</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -119,7 +251,7 @@
     <recordLookups>
         <name>GetUnitWithBedRoomRecords</name>
         <label>GetUnitWithBedRoomRecords</label>
-        <locationX>50</locationX>
+        <locationX>182</locationX>
         <locationY>242</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -146,13 +278,28 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <start>
-        <locationX>188</locationX>
+        <locationX>518</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>RequiredElement</targetReference>
         </connector>
     </start>
     <status>Active</status>
+    <variables>
+        <name>currentItem_Filter_units_by_Properties</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Unit__c</objectType>
+    </variables>
+    <variables>
+        <name>Input_Property</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
     <variables>
         <name>InputReqInfo</name>
         <dataType>String</dataType>

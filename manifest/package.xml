@@ -1,8 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
 	<types>
-		<members>Copilot_for_Salesforce</members>
-		<name>Bot</name>
+		<members>TenantUnitFetcher</members>
+		<members>UnitSearch</members>
+		<members>UnitStatusTrackingController</members>
+		<name>ApexClass</name>
+	</types>
+	<types>
+		<members>Add_Experiences_to_Prompt</members>
+		<members>Agreements_Exceeding_11_months</members>
+		<members>GetUnitWithRoomDetails</members>
+		<members>Get_Cases_on_Type_And_Status</members>
+		<members>Get_Payment_Records_for_Units</members>
+		<members>Get_Payments_Delayed_More_Than_a_Month</members>
+		<members>Get_Property_for_Accounts</members>
+		<members>Get_Tenant_Based_On_Name</members>
+		<members>Get_Tenant_Info_From_Payment</members>
+		<members>Get_Tenant_Payment_Details</members>
+		<members>Get_Unit_Related_to_Property</members>
+		<members>Get_Units_With_Least_Rents</members>
+		<members>Send_Reminder_Emails_For_Upcoming_Payments</members>
+		<members>Send_Tenant_Renewal_Reminder_Email</members>
+		<members>Show_Tenants_Vacated</members>
+		<members>UpdateUnitStatusAndDeleteTenant</members>
+		<members>Update_Unit_Status_Based_On_Agreement</members>
+		<name>Flow</name>
 	</types>
 	<version>63.0</version>
 </Package>
