@@ -48,7 +48,7 @@
             <elementReference>DataCount</elementReference>
         </limit>
         <object>Unit__c</object>
-        <sortField>Rent_Amount__c</sortField>
+        <sortField>Rent__c</sortField>
         <sortOrder>Asc</sortOrder>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>

@@ -3,18 +3,46 @@
     <apiVersion>63.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
-        <name>Assign_Tenants</name>
-        <label>Assign Tenants</label>
+        <name>Assignment_of_Tenant_Collection</name>
+        <label>Assignment of Tenant Collection</label>
         <locationX>176</locationX>
-        <locationY>650</locationY>
+        <locationY>242</locationY>
         <assignmentItems>
-            <assignToReference>propertyVacatedTenant</assignToReference>
+            <assignToReference>tenantCollectionAfterFilter</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>get_Tenants</elementReference>
+                <elementReference>Filter_Tenant_Collection</elementReference>
             </value>
         </assignmentItems>
     </assignments>
+    <collectionProcessors>
+        <name>Filter_Tenant_Collection</name>
+        <elementSubtype>FilterCollectionProcessor</elementSubtype>
+        <label>Filter Tenant Collection</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <assignNextValueToReference>currentItem_Filter_Tenant_Collection</assignNextValueToReference>
+        <collectionProcessorType>FilterCollectionProcessor</collectionProcessorType>
+        <collectionReference>tenantCollection</collectionReference>
+        <conditionLogic>and</conditionLogic>
+        <conditions>
+            <leftValueReference>currentItem_Filter_Tenant_Collection.Agreement_Upto__c</leftValueReference>
+            <operator>GreaterThanOrEqualTo</operator>
+            <rightValue>
+                <elementReference>threeMonthsAgo</elementReference>
+            </rightValue>
+        </conditions>
+        <conditions>
+            <leftValueReference>currentItem_Filter_Tenant_Collection.Agreement_Upto__c</leftValueReference>
+            <operator>LessThanOrEqualTo</operator>
+            <rightValue>
+                <elementReference>currentDate</elementReference>
+            </rightValue>
+        </conditions>
+        <connector>
+            <targetReference>Assignment_of_Tenant_Collection</targetReference>
+        </connector>
+    </collectionProcessors>
     <environments>Default</environments>
     <formulas>
         <name>currentDate</name>
@@ -28,20 +56,6 @@
     </formulas>
     <interviewLabel>Show Tenants Vacated {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Show Tenants Vacated Property In 3 Months</label>
-    <loops>
-        <name>Loop_through_Units</name>
-        <label>Loop through Units</label>
-        <locationX>176</locationX>
-        <locationY>350</locationY>
-        <collectionReference>get_Units_Based_on_Property</collectionReference>
-        <iterationOrder>Asc</iterationOrder>
-        <nextValueConnector>
-            <targetReference>get_Tenants</targetReference>
-        </nextValueConnector>
-        <noMoreValuesConnector>
-            <targetReference>Assign_Tenants</targetReference>
-        </noMoreValuesConnector>
-    </loops>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -61,97 +75,36 @@
         </value>
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
-    <recordLookups>
-        <name>get_Property_Based_on_Name</name>
-        <label>get Property Based on Name</label>
-        <locationX>176</locationX>
-        <locationY>134</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>get_Units_Based_on_Property</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Name</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>propertyName</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Property__c</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
-        <name>get_Tenants</name>
-        <label>get Tenants</label>
-        <locationX>264</locationX>
-        <locationY>458</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Loop_through_Units</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Unit__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>Loop_through_Units.Id</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>false</getFirstRecordOnly>
-        <object>Tenant_Info__c</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
-        <name>get_Units_Based_on_Property</name>
-        <label>get Units Based on Property</label>
-        <locationX>176</locationX>
-        <locationY>242</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>Loop_through_Units</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Property_Name__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>get_Property_Based_on_Name.Id</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>false</getFirstRecordOnly>
-        <object>Unit__c</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
     <start>
         <locationX>50</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>get_Property_Based_on_Name</targetReference>
+            <targetReference>Filter_Tenant_Collection</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
-        <name>propertyName</name>
-        <dataType>String</dataType>
+        <name>currentItem_Filter_Tenant_Collection</name>
+        <dataType>SObject</dataType>
         <isCollection>false</isCollection>
-        <isInput>true</isInput>
+        <isInput>false</isInput>
         <isOutput>false</isOutput>
+        <objectType>Tenant_Info__c</objectType>
     </variables>
     <variables>
-        <name>propertyVacatedTenant</name>
+        <name>tenantCollection</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Tenant_Info__c</objectType>
+    </variables>
+    <variables>
+        <name>tenantCollectionAfterFilter</name>
         <dataType>SObject</dataType>
         <isCollection>true</isCollection>
         <isInput>false</isInput>
         <isOutput>true</isOutput>
         <objectType>Tenant_Info__c</objectType>
-    </variables>
-    <variables>
-        <name>tenantDate</name>
-        <dataType>Date</dataType>
-        <isCollection>true</isCollection>
-        <isInput>true</isInput>
-        <isOutput>false</isOutput>
     </variables>
 </Flow>

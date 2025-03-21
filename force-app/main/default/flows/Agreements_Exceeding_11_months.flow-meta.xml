@@ -2,32 +2,70 @@
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>63.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Agreement_List</name>
+        <label>Agreement List</label>
+        <locationX>264</locationX>
+        <locationY>458</locationY>
+        <assignmentItems>
+            <assignToReference>AgreementsExceeding11Months</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>Tenant_Loop</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Tenant_Loop</targetReference>
+        </connector>
+    </assignments>
     <decisions>
-        <name>Decision_1</name>
-        <label>Decision 1</label>
-        <locationX>352</locationX>
+        <name>AgreementOverAnYear</name>
+        <label>AgreementOverAnYear</label>
+        <locationX>396</locationX>
         <locationY>350</locationY>
         <defaultConnector>
             <targetReference>Tenant_Loop</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
-            <name>Outcome_1_of_Decision_1</name>
+            <name>Is_Agreement_For_11_months</name>
             <conditionLogic>and</conditionLogic>
             <conditions>
+                <leftValueReference>Agreement</leftValueReference>
                 <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>AgreemnetEndNoInCurrentMonth</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
             </conditions>
             <connector>
-                <targetReference>Tenant_Loop</targetReference>
+                <targetReference>Agreement_List</targetReference>
             </connector>
-            <label>Outcome 1 of Decision 1</label>
+            <label>Is Agreement For 11 months</label>
         </rules>
     </decisions>
     <environments>Default</environments>
     <formulas>
         <name>Agreement</name>
         <dataType>Boolean</dataType>
-        <expression>true</expression>
+        <expression>( YEAR({!Tenant_Loop.Agreement_Upto__c}) - YEAR({!Tenant_Loop.Agreement_From__c}) ) * 12 
++ ( MONTH({!Tenant_Loop.Agreement_Upto__c}) - MONTH({!Tenant_Loop.Agreement_From__c}) ) &gt; 11</expression>
+    </formulas>
+    <formulas>
+        <name>AgreemnetEndNoInCurrentMonth</name>
+        <dataType>Boolean</dataType>
+        <expression>NOT(
+    AND(
+        YEAR({!Tenant_Loop.Agreement_Upto__c}) = YEAR(TODAY()),
+        MONTH({!Tenant_Loop.Agreement_Upto__c}) = MONTH(TODAY())
+    )
+)</expression>
     </formulas>
     <interviewLabel>Agreements Exceeding 11 months {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Agreements Exceeding 11 months</label>
@@ -39,7 +77,7 @@
         <collectionReference>Get_Tenant_Agreement</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
-            <targetReference>Decision_1</targetReference>
+            <targetReference>AgreementOverAnYear</targetReference>
         </nextValueConnector>
     </loops>
     <processMetadataValues>
@@ -103,5 +141,20 @@
             <targetReference>Get_Tenant_Agreement</targetReference>
         </connector>
     </start>
-    <status>InvalidDraft</status>
+    <status>Draft</status>
+    <variables>
+        <name>AgreementsExceeding11Months</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <objectType>Tenant_Info__c</objectType>
+    </variables>
+    <variables>
+        <name>isAgreementExceeding</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
 </Flow>
