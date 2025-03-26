@@ -24,7 +24,7 @@
             <assignToReference>Rent</assignToReference>
             <operator>Assign</operator>
             <value>
-                <elementReference>Get_the_Unit_ID.Rent_Amount__c</elementReference>
+                <elementReference>Get_the_Unit_ID.Rent__c</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -189,9 +189,16 @@
         <connector>
             <targetReference>Storing_Rent</targetReference>
         </connector>
-        <filterLogic>and</filterLogic>
+        <filterLogic>or</filterLogic>
         <filters>
             <field>Unit_Name__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>UnitName_Input</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Name</field>
             <operator>EqualTo</operator>
             <value>
                 <elementReference>UnitName_Input</elementReference>

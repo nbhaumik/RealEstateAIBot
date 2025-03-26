@@ -296,7 +296,7 @@
         <dataType>SObject</dataType>
         <isCollection>true</isCollection>
         <isInput>false</isInput>
-        <isOutput>true</isOutput>
+        <isOutput>false</isOutput>
         <objectType>Tenant_Info__c</objectType>
     </variables>
     <variables>

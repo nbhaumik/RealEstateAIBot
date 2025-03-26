@@ -36,6 +36,12 @@
             </value>
         </inputParameters>
         <inputParameters>
+            <name>sendRichBody</name>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
             <name>relatedRecordId</name>
             <value>
                 <elementReference>OverDuePresentLeasee</elementReference>
@@ -75,7 +81,7 @@
         <locationX>528</locationX>
         <locationY>782</locationY>
         <assignmentItems>
-            <assignToReference>FaildeReminders</assignToReference>
+            <assignToReference>FailedReminders</assignToReference>
             <operator>Add</operator>
             <value>
                 <elementReference>OverDuePaymentLoop</elementReference>
@@ -131,7 +137,10 @@
         <description>Calculating a date that is one month prior to the current date.</description>
         <name>OneMonthAgo</name>
         <dataType>Date</dataType>
-        <expression>DATE(YEAR(TODAY()), MONTH(TODAY()) - 1, 1)</expression>
+        <expression>IF(MONTH(TODAY()) = 1, 
+   DATE(YEAR(TODAY()) - 1, 12, 1), 
+   DATE(YEAR(TODAY()), MONTH(TODAY()) - 1, 1)
+)</expression>
     </formulas>
     <interviewLabel>Get {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Send Reminder Emails For Due Payments</label>
@@ -257,11 +266,12 @@
             <targetReference>getPaymentsDues</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <textTemplates>
         <name>ReminderEmailBody</name>
-        <isViewedAsPlainText>false</isViewedAsPlainText>
-        <text>&lt;p&gt;&lt;strong&gt;Hi {!DueLeaseeFirstName} {!DueLeaseeLastName},&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;   I hope you&apos;re doing well. This is a gentle reminder that your payment of &lt;strong&gt;{!DueAmount}&lt;/strong&gt; is due.&lt;/p&gt;&lt;p&gt;        &lt;strong&gt;Last Payment Date: &lt;/strong&gt;{!LastPaidDate}&lt;/p&gt;&lt;p&gt;  To avoid any late fees or service interruptions, please make the payment at your earliest convenience. If you have already made the          payment, kindly disregard this message.  &lt;/p&gt;&lt;p&gt;For any questions or assistance, feel free to reach out.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Best regards,&lt;/strong&gt;&lt;/p&gt;</text>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>&lt;p&gt;&lt;strong&gt;Hi {!DueLeaseeFirstName} {!DueLeaseeLastName},&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;  &lt;n/&gt;
+ I hope you&apos;re doing well. This is a gentle reminder that your payment of &lt;strong&gt;{!DueAmount}&lt;/strong&gt; is due.&lt;/p&gt;&lt;p&gt;        &lt;strong&gt;Last Payment Date: &lt;/strong&gt;{!LastPaidDate}&lt;/p&gt;&lt;p&gt;  To avoid any late fees or service interruptions, please make the payment at your earliest convenience. If you have already made the          payment, kindly disregard this message.  &lt;/p&gt;&lt;p&gt;For any questions or assistance, feel free to reach out.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Best regards,&lt;/strong&gt;&lt;/p&gt;</text>
     </textTemplates>
     <textTemplates>
         <name>ReminderSubject</name>
@@ -312,22 +322,12 @@
         <isOutput>false</isOutput>
     </variables>
     <variables>
-        <name>FaildeReminders</name>
+        <name>FailedReminders</name>
         <dataType>SObject</dataType>
         <isCollection>true</isCollection>
         <isInput>false</isInput>
         <isOutput>true</isOutput>
         <objectType>Payment_Detail__c</objectType>
-    </variables>
-    <variables>
-        <name>hardcodedemailId</name>
-        <dataType>String</dataType>
-        <isCollection>false</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-        <value>
-            <stringValue>chinnugeorge1234@gmail.com</stringValue>
-        </value>
     </variables>
     <variables>
         <name>LastPaidDate</name>

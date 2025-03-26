@@ -5,24 +5,24 @@
     <assignments>
         <name>assign_Properties</name>
         <label>assign Properties</label>
-        <locationX>1144</locationX>
-        <locationY>890</locationY>
+        <locationX>792</locationX>
+        <locationY>782</locationY>
         <assignmentItems>
             <assignToReference>propertyCollection</assignToReference>
             <operator>Add</operator>
             <value>
-                <elementReference>loop_Properties</elementReference>
+                <elementReference>get_Property</elementReference>
             </value>
         </assignmentItems>
         <connector>
-            <targetReference>loop_Units</targetReference>
+            <targetReference>loop_Properties</targetReference>
         </connector>
     </assignments>
     <decisions>
         <name>Does_Property_Exist</name>
         <label>Does Property Exist</label>
-        <locationX>1056</locationX>
-        <locationY>782</locationY>
+        <locationX>704</locationX>
+        <locationY>674</locationY>
         <defaultConnector>
             <targetReference>assign_Properties</targetReference>
         </defaultConnector>
@@ -38,34 +38,9 @@
                 </rightValue>
             </conditions>
             <connector>
-                <targetReference>loop_Units</targetReference>
+                <targetReference>loop_Properties</targetReference>
             </connector>
             <label>Exists</label>
-        </rules>
-    </decisions>
-    <decisions>
-        <name>Does_Tenant_Exist</name>
-        <label>Does Tenant Exist</label>
-        <locationX>1232</locationX>
-        <locationY>674</locationY>
-        <defaultConnector>
-            <targetReference>loop_Units</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
-        <rules>
-            <name>Tenants_Exist</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>get_Tenant.Id</leftValueReference>
-                <operator>IsNull</operator>
-                <rightValue>
-                    <booleanValue>false</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Does_Property_Exist</targetReference>
-            </connector>
-            <label>Tenants Exist</label>
         </rules>
     </decisions>
     <environments>Default</environments>
@@ -79,32 +54,32 @@
         <dataType>Date</dataType>
         <expression>ADDMONTHS(TODAY(), -2)</expression>
     </formulas>
-    <interviewLabel>Get Properties Not Rented Out {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>Get Properties Not Rented Out</label>
+    <interviewLabel>show Vacant Properties {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>show Vacant Properties</label>
     <loops>
         <name>loop_Properties</name>
         <label>loop Properties</label>
+        <locationX>528</locationX>
+        <locationY>566</locationY>
+        <collectionReference>get_Property</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>Does_Property_Exist</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>loop_Tenants</targetReference>
+        </noMoreValuesConnector>
+    </loops>
+    <loops>
+        <name>loop_Tenants</name>
+        <label>loop Tenants</label>
         <locationX>176</locationX>
         <locationY>242</locationY>
-        <collectionReference>get_Properties</collectionReference>
+        <collectionReference>get_Tenants</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
             <targetReference>get_Units</targetReference>
         </nextValueConnector>
-    </loops>
-    <loops>
-        <name>loop_Units</name>
-        <label>loop Units</label>
-        <locationX>880</locationX>
-        <locationY>458</locationY>
-        <collectionReference>get_Units</collectionReference>
-        <iterationOrder>Asc</iterationOrder>
-        <nextValueConnector>
-            <targetReference>get_Tenant</targetReference>
-        </nextValueConnector>
-        <noMoreValuesConnector>
-            <targetReference>loop_Properties</targetReference>
-        </noMoreValuesConnector>
     </loops>
     <processMetadataValues>
         <name>BuilderType</name>
@@ -126,35 +101,36 @@
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
     <recordLookups>
-        <name>get_Properties</name>
-        <label>get Properties</label>
-        <locationX>176</locationX>
-        <locationY>134</locationY>
+        <name>get_Property</name>
+        <label>get Property</label>
+        <locationX>528</locationX>
+        <locationY>458</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>loop_Properties</targetReference>
         </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>get_Units.Property_Name__r.Id</elementReference>
+            </value>
+        </filters>
         <getFirstRecordOnly>false</getFirstRecordOnly>
         <object>Property__c</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
-        <name>get_Tenant</name>
-        <label>get Tenant</label>
-        <locationX>1232</locationX>
-        <locationY>566</locationY>
+        <name>get_Tenants</name>
+        <label>get Tenants</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Does_Tenant_Exist</targetReference>
+            <targetReference>loop_Tenants</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
-        <filters>
-            <field>Unit__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>loop_Units.Id</elementReference>
-            </value>
-        </filters>
         <filters>
             <field>Agreement_Upto__c</field>
             <operator>GreaterThanOrEqualTo</operator>
@@ -169,35 +145,28 @@
                 <elementReference>currentDate</elementReference>
             </value>
         </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
         <object>Tenant_Info__c</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
         <name>get_Units</name>
         <label>get Units</label>
-        <locationX>880</locationX>
+        <locationX>528</locationX>
         <locationY>350</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>loop_Units</targetReference>
+            <targetReference>get_Property</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
-            <field>Property_Name__c</field>
+            <field>Id</field>
             <operator>EqualTo</operator>
             <value>
-                <elementReference>loop_Properties.Id</elementReference>
+                <elementReference>loop_Tenants.Unit__r.Id</elementReference>
             </value>
         </filters>
-        <filters>
-            <field>Unit_Status__c</field>
-            <operator>EqualTo</operator>
-            <value>
-                <stringValue>Available</stringValue>
-            </value>
-        </filters>
-        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
         <object>Unit__c</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
@@ -205,10 +174,10 @@
         <locationX>50</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>get_Properties</targetReference>
+            <targetReference>get_Tenants</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>propertyCollection</name>
         <dataType>SObject</dataType>
@@ -218,27 +187,11 @@
         <objectType>Property__c</objectType>
     </variables>
     <variables>
-        <name>tenantRecord</name>
-        <dataType>SObject</dataType>
-        <isCollection>false</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-        <objectType>Tenant_Info__c</objectType>
-    </variables>
-    <variables>
-        <name>tenantRecordCollection</name>
-        <dataType>SObject</dataType>
-        <isCollection>true</isCollection>
-        <isInput>false</isInput>
-        <isOutput>false</isOutput>
-        <objectType>Tenant_Info__c</objectType>
-    </variables>
-    <variables>
-        <name>totalProperties</name>
+        <name>tenantCollection</name>
         <dataType>SObject</dataType>
         <isCollection>true</isCollection>
         <isInput>true</isInput>
         <isOutput>false</isOutput>
-        <objectType>Property__c</objectType>
+        <objectType>Tenant_Info__c</objectType>
     </variables>
 </Flow>

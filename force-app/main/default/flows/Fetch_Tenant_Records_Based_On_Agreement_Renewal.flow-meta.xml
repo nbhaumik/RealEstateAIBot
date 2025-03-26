@@ -17,6 +17,11 @@
     </assignments>
     <environments>Default</environments>
     <formulas>
+        <name>CurrentDate</name>
+        <dataType>Date</dataType>
+        <expression>TODAY()</expression>
+    </formulas>
+    <formulas>
         <name>FifteenDaysFromToday</name>
         <dataType>Date</dataType>
         <expression>TODAY() + 15</expression>
@@ -57,6 +62,13 @@
             <operator>LessThanOrEqualTo</operator>
             <value>
                 <elementReference>FifteenDaysFromToday</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Agreement_Upto__c</field>
+            <operator>GreaterThanOrEqualTo</operator>
+            <value>
+                <elementReference>CurrentDate</elementReference>
             </value>
         </filters>
         <getFirstRecordOnly>false</getFirstRecordOnly>
