@@ -5,8 +5,8 @@
     <assignments>
         <name>Copy_2_of_ReturnCase</name>
         <label>ReturnCase</label>
-        <locationX>792</locationX>
-        <locationY>890</locationY>
+        <locationX>528</locationX>
+        <locationY>782</locationY>
         <assignmentItems>
             <assignToReference>TopCaseReason</assignToReference>
             <operator>Add</operator>
@@ -19,26 +19,10 @@
         </connector>
     </assignments>
     <assignments>
-        <name>Fetch_Reason_Count</name>
-        <label>Fetch Reason Count</label>
-        <locationX>528</locationX>
-        <locationY>350</locationY>
-        <assignmentItems>
-            <assignToReference>caseReasonList</assignToReference>
-            <operator>Add</operator>
-            <value>
-                <elementReference>Case_Loop.Reason</elementReference>
-            </value>
-        </assignmentItems>
-        <connector>
-            <targetReference>Check_Case_Reason_already_considered</targetReference>
-        </connector>
-    </assignments>
-    <assignments>
         <name>ReturnCase</name>
         <label>ReturnCase</label>
-        <locationX>528</locationX>
-        <locationY>890</locationY>
+        <locationX>264</locationX>
+        <locationY>782</locationY>
         <assignmentItems>
             <assignToReference>TopCaseReason</assignToReference>
             <operator>Assign</operator>
@@ -64,8 +48,8 @@
     <assignments>
         <name>variable_Assignment</name>
         <label>variable Assignment</label>
-        <locationX>792</locationX>
-        <locationY>674</locationY>
+        <locationX>528</locationX>
+        <locationY>566</locationY>
         <assignmentItems>
             <assignToReference>CaseReasonCount</assignToReference>
             <operator>AssignCount</operator>
@@ -88,8 +72,8 @@
         <name>Case_Filter</name>
         <elementSubtype>FilterCollectionProcessor</elementSubtype>
         <label>Case Filter</label>
-        <locationX>792</locationX>
-        <locationY>566</locationY>
+        <locationX>528</locationX>
+        <locationY>458</locationY>
         <assignNextValueToReference>currentItem_Case_Filter</assignNextValueToReference>
         <collectionProcessorType>FilterCollectionProcessor</collectionProcessorType>
         <collectionReference>Get_Case_Records</collectionReference>
@@ -106,36 +90,42 @@
         </connector>
     </collectionProcessors>
     <decisions>
-        <name>Check_Case_Reason_already_considered</name>
-        <label>Check Case Reason already considered</label>
-        <locationX>528</locationX>
-        <locationY>458</locationY>
+        <name>Check_case_reason</name>
+        <label>Check case reason</label>
+        <locationX>748</locationX>
+        <locationY>350</locationY>
         <defaultConnector>
-            <targetReference>Case_Filter</targetReference>
+            <targetReference>Case_Loop</targetReference>
         </defaultConnector>
-        <defaultConnectorLabel>No</defaultConnectorLabel>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
-            <name>Yes</name>
-            <conditionLogic>and</conditionLogic>
+            <name>Duplicate</name>
+            <conditionLogic>or</conditionLogic>
             <conditions>
                 <leftValueReference>checkCaseReasonadded</leftValueReference>
                 <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>caseReasonList</leftValueReference>
+                <operator>IsNull</operator>
                 <rightValue>
                     <booleanValue>true</booleanValue>
                 </rightValue>
             </conditions>
             <connector>
-                <isGoTo>true</isGoTo>
-                <targetReference>Fetch_Reason_Count</targetReference>
+                <targetReference>Case_Filter</targetReference>
             </connector>
-            <label>Yes</label>
+            <label>Duplicate</label>
         </rules>
     </decisions>
     <decisions>
         <name>Identifying_Top_Most_Cases</name>
         <label>Identifying Top Most Cases</label>
-        <locationX>792</locationX>
-        <locationY>782</locationY>
+        <locationX>528</locationX>
+        <locationY>674</locationY>
         <defaultConnector>
             <targetReference>Case_Loop</targetReference>
         </defaultConnector>
@@ -187,7 +177,7 @@
         <collectionReference>Get_Case_Records</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
-            <targetReference>Fetch_Reason_Count</targetReference>
+            <targetReference>Check_case_reason</targetReference>
         </nextValueConnector>
     </loops>
     <processMetadataValues>

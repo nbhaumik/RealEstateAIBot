@@ -6,7 +6,7 @@
         <name>Add_Property_Tenants</name>
         <label>Add Property Tenants</label>
         <locationX>264</locationX>
-        <locationY>566</locationY>
+        <locationY>674</locationY>
         <assignmentItems>
             <assignToReference>propertyRelatedTenants</assignToReference>
             <operator>Add</operator>
@@ -22,7 +22,7 @@
         <name>Assign_Tenants</name>
         <label>Assign Tenants</label>
         <locationX>176</locationX>
-        <locationY>758</locationY>
+        <locationY>950</locationY>
         <assignmentItems>
             <assignToReference>propertyVacatedTenant</assignToReference>
             <operator>Assign</operator>
@@ -31,6 +31,31 @@
             </value>
         </assignmentItems>
     </assignments>
+    <decisions>
+        <name>Check_for_Tenants</name>
+        <label>Check for Tenants</label>
+        <locationX>396</locationX>
+        <locationY>566</locationY>
+        <defaultConnector>
+            <targetReference>Loop_through_Units</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Exists</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>get_Tenants</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Add_Property_Tenants</targetReference>
+            </connector>
+            <label>Exists</label>
+        </rules>
+    </decisions>
     <environments>Default</environments>
     <formulas>
         <name>currentDate</name>
@@ -101,11 +126,11 @@
     <recordLookups>
         <name>get_Tenants</name>
         <label>get Tenants</label>
-        <locationX>264</locationX>
+        <locationX>396</locationX>
         <locationY>458</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Add_Property_Tenants</targetReference>
+            <targetReference>Check_for_Tenants</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>

@@ -1,17 +1,84 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Send_Email_Action_1</name>
+        <label>Send Email Action 1</label>
+        <locationX>176</locationX>
+        <locationY>2174</locationY>
+        <actionName>emailSimple</actionName>
+        <actionType>emailSimple</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>emailAddresses</name>
+            <value>
+                <elementReference>getSalesPerson.Email</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailSubject</name>
+            <value>
+                <elementReference>EmailSubject</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailBody</name>
+            <value>
+                <elementReference>EmailBodyData</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>sendRichBody</name>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </inputParameters>
+        <nameSegment>emailSimple</nameSegment>
+        <offset>0</offset>
+    </actionCalls>
     <apiVersion>63.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
         <name>Assign_Available_Tenant_Units</name>
         <label>Assign Available Tenant Units</label>
         <locationX>1232</locationX>
-        <locationY>998</locationY>
+        <locationY>1106</locationY>
         <assignmentItems>
             <assignToReference>AvailableUnits</assignToReference>
             <operator>Add</operator>
             <value>
                 <elementReference>getUnitFromTenant</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>get_rows</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>AssignRows</name>
+        <label>AssignRows</label>
+        <locationX>264</locationX>
+        <locationY>1982</locationY>
+        <assignmentItems>
+            <assignToReference>DataRow</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>CurrentRow</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>AvailableUnitLoops</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>AssignTenantDetails</name>
+        <label>AssignTenantDetails</label>
+        <locationX>1232</locationX>
+        <locationY>1322</locationY>
+        <assignmentItems>
+            <assignToReference>TenantRowData</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>CurrentTenantRow</elementReference>
             </value>
         </assignmentItems>
         <connector>
@@ -22,7 +89,7 @@
         <name>Get_All_Available_Units</name>
         <label>Get All Available Units</label>
         <locationX>792</locationX>
-        <locationY>674</locationY>
+        <locationY>782</locationY>
         <assignmentItems>
             <assignToReference>AvailableUnits</assignToReference>
             <operator>Add</operator>
@@ -34,11 +101,43 @@
             <targetReference>getUpcomingTenantFromUnit</targetReference>
         </connector>
     </assignments>
+    <assignments>
+        <name>get_Row</name>
+        <label>get Row</label>
+        <locationX>264</locationX>
+        <locationY>1874</locationY>
+        <assignmentItems>
+            <assignToReference>Row</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <numberValue>1.0</numberValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>AssignRows</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>get_rows</name>
+        <label>get rows</label>
+        <locationX>1232</locationX>
+        <locationY>1214</locationY>
+        <assignmentItems>
+            <assignToReference>TenantRow</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <numberValue>1.0</numberValue>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>AssignTenantDetails</targetReference>
+        </connector>
+    </assignments>
     <decisions>
         <name>Find_Vacant_Units</name>
         <label>Find Vacant Units</label>
         <locationX>968</locationX>
-        <locationY>566</locationY>
+        <locationY>674</locationY>
         <defaultConnector>
             <targetReference>FindTenant</targetReference>
         </defaultConnector>
@@ -68,21 +167,38 @@
     <interviewLabel>Property Data To Agents {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Property Data To Agents</label>
     <loops>
+        <name>AvailableUnitLoops</name>
+        <label>AvailableUnitLoops</label>
+        <locationX>176</locationX>
+        <locationY>1766</locationY>
+        <collectionReference>AvailableUnits</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>get_Row</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>Send_Email_Action_1</targetReference>
+        </noMoreValuesConnector>
+    </loops>
+    <loops>
         <name>get_Units_From_Property</name>
         <label>get Units From Property</label>
         <locationX>176</locationX>
-        <locationY>242</locationY>
+        <locationY>350</locationY>
         <collectionReference>Get_Property</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
             <targetReference>GetRelatedUnitRecords</targetReference>
         </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>AvailableUnitLoops</targetReference>
+        </noMoreValuesConnector>
     </loops>
     <loops>
         <name>getUpcomingTenantFromUnit</name>
         <label>getUpcomingTenantFromUnit</label>
         <locationX>704</locationX>
-        <locationY>458</locationY>
+        <locationY>566</locationY>
         <collectionReference>GetRelatedUnitRecords</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
@@ -96,7 +212,7 @@
         <name>Unit_Of_Tenants</name>
         <label>Unit Of Tenants</label>
         <locationX>1144</locationX>
-        <locationY>782</locationY>
+        <locationY>890</locationY>
         <collectionReference>FindTenant</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
@@ -129,7 +245,7 @@
         <name>FindTenant</name>
         <label>FindTenant</label>
         <locationX>1144</locationX>
-        <locationY>674</locationY>
+        <locationY>782</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Unit_Of_Tenants</targetReference>
@@ -157,7 +273,7 @@
         <name>Get_Property</name>
         <label>Get Property</label>
         <locationX>176</locationX>
-        <locationY>134</locationY>
+        <locationY>242</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>get_Units_From_Property</targetReference>
@@ -178,7 +294,7 @@
         <name>GetRelatedUnitRecords</name>
         <label>GetRelatedUnitRecords</label>
         <locationX>704</locationX>
-        <locationY>350</locationY>
+        <locationY>458</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>getUpcomingTenantFromUnit</targetReference>
@@ -203,10 +319,31 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <recordLookups>
+        <name>getSalesPerson</name>
+        <label>getSalesPerson</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Get_Property</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Sales_City__c</field>
+            <operator>Contains</operator>
+            <value>
+                <elementReference>InputCity</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>User</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
         <name>getUnitFromTenant</name>
         <label>getUnitFromTenant</label>
         <locationX>1232</locationX>
-        <locationY>890</locationY>
+        <locationY>998</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
             <targetReference>Assign_Available_Tenant_Units</targetReference>
@@ -228,16 +365,95 @@
         <queriedFields>Bathrooms__c</queriedFields>
         <queriedFields>Name</queriedFields>
         <queriedFields>Property_Name__c</queriedFields>
+        <queriedFields>Unit_Status__c</queriedFields>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <start>
         <locationX>50</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Get_Property</targetReference>
+            <targetReference>getSalesPerson</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
+    <textTemplates>
+        <name>AllCellsStyle</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>text-align: left; padding: 8px;</text>
+    </textTemplates>
+    <textTemplates>
+        <name>CurrentRow</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>&lt;tr&gt;
+&lt;td style=&quot;{!AllCellsStyle}&quot;&gt;{!Row}&lt;/td&gt;
+&lt;td style=&quot;{!AllCellsStyle}&quot;&gt;{!AvailableUnitLoops.Property_Name__r.Name}&lt;/td&gt;
+&lt;td style=&quot;{!AllCellsStyle}&quot;&gt;{!AvailableUnitLoops.Unit_Name__c}&lt;/td&gt;
+&lt;td style=&quot;{!AllCellsStyle}&quot;&gt;{!AvailableUnitLoops.Rent_Amount__c}&lt;/td&gt;
+&lt;td style=&quot;{!AllCellsStyle}&quot;&gt;{!AvailableUnitLoops.Bedrooms__c}&lt;/td&gt;
+&lt;td style=&quot;{!AllCellsStyle}&quot;&gt; {!AvailableUnitLoops.Bathrooms__c}&lt;/td&gt;
+&lt;td style=&quot;{!AllCellsStyle}&quot;&gt; {!AvailableUnitLoops.Unit_Status__c}&lt;/td&gt;
+&lt;/tr&gt;</text>
+    </textTemplates>
+    <textTemplates>
+        <name>CurrentTenantRow</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>&lt;tr&gt;
+&lt;td style=&quot;{!AllCellsStyle}&quot;&gt;{!TenantRow}&lt;/td&gt;
+&lt;td style=&quot;{!AllCellsStyle}&quot;&gt;{!Unit_Of_Tenants.Unit__r.Unit_Name__c}&lt;/td&gt;
+&lt;td style=&quot;{!AllCellsStyle}&quot;&gt;{!Unit_Of_Tenants.Present_Leasee__r.Name}&lt;/td&gt;
+&lt;td style=&quot;{!AllCellsStyle}&quot;&gt;{!Unit_Of_Tenants.Present_Leasee__r.Email}&lt;/td&gt;
+&lt;td style=&quot;{!AllCellsStyle}&quot;&gt;{!Unit_Of_Tenants.Name}&lt;/td&gt;
+&lt;td style=&quot;{!AllCellsStyle}&quot;&gt;{!Unit_Of_Tenants.Agreement_From__c}&lt;/td&gt;
+&lt;td style=&quot;{!AllCellsStyle}&quot;&gt;{!Unit_Of_Tenants.Agreement_Upto__c}&lt;/td&gt;
+&lt;/tr&gt;</text>
+    </textTemplates>
+    <textTemplates>
+        <name>DataHeaderColumn</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>&lt;tr style=&quot;background-color: #4CAF50; color: white;&quot;&gt;
+    &lt;th style=&quot;{!AllCellsStyle}&quot;&gt;#&lt;/th&gt;
+   &lt;th style=&quot;{!AllCellsStyle}&quot;&gt;Property&lt;/th&gt;
+   &lt;th style=&quot;{!AllCellsStyle}&quot;&gt;Unit&lt;/th&gt;
+    &lt;th style=&quot;{!AllCellsStyle}&quot;&gt;Rent&lt;/th&gt;
+   &lt;th style=&quot;{!AllCellsStyle}&quot;&gt;Bedroom&lt;/th&gt;
+   &lt;th style=&quot;{!AllCellsStyle}&quot;&gt;Bathroom&lt;/th&gt;
+   &lt;th style=&quot;{!AllCellsStyle}&quot;&gt;Status&lt;/th&gt;
+&lt;/tr&gt;</text>
+    </textTemplates>
+    <textTemplates>
+        <name>DataTable</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>&lt;table style=&quot;border-collapse: collapse; width: 100%; border: 1px solid black;&quot;&gt;
+     {!DataHeaderColumn}
+     {!DataRow}
+&lt;/table&gt;</text>
+    </textTemplates>
+    <textTemplates>
+        <name>EmailBodyData</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>&lt;p&gt;Hi&lt;strong&gt; {!getSalesPerson.Name}&lt;/strong&gt;, Here are the details of the units and tenants that are available of sale in &lt;strong&gt;&lt;em&gt;{!getSalesPerson.Sales_City__c} &lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Units :&lt;/strong&gt; &lt;/p&gt;&lt;p&gt;{!DataTable}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Tenants :&lt;/strong&gt;&lt;/p&gt;&lt;p&gt; {!TenantTable}&lt;/p&gt;</text>
+    </textTemplates>
+    <textTemplates>
+        <name>TenantHeader</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>&lt;tr style=&quot;background-color: #4CAF50; color: white;&quot;&gt;
+    &lt;th style=&quot;{!AllCellsStyle}&quot;&gt;#&lt;/th&gt;
+   &lt;th style=&quot;{!AllCellsStyle}&quot;&gt;Unit&lt;/th&gt;
+   &lt;th style=&quot;{!AllCellsStyle}&quot;&gt;Leasee&lt;/th&gt;
+   &lt;th style=&quot;{!AllCellsStyle}&quot;&gt;Leasee Email&lt;/th&gt;
+   &lt;th style=&quot;{!AllCellsStyle}&quot;&gt;Tenant&lt;/th&gt;
+   &lt;th style=&quot;{!AllCellsStyle}&quot;&gt;Agreement From&lt;/th&gt;
+   &lt;th style=&quot;{!AllCellsStyle}&quot;&gt;Agreement To&lt;/th&gt;
+&lt;/tr&gt;</text>
+    </textTemplates>
+    <textTemplates>
+        <name>TenantTable</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>&lt;table style=&quot;border-collapse: collapse; width: 100%; border: 1px solid black;&quot;&gt;
+    {!TenantHeader}
+    {!TenantRowData}
+&lt;/table&gt;</text>
+    </textTemplates>
     <variables>
         <name>AvailableUnits</name>
         <dataType>SObject</dataType>
@@ -247,10 +463,65 @@
         <objectType>Unit__c</objectType>
     </variables>
     <variables>
+        <name>currentItemFromSourceCollection</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Unit__c</objectType>
+    </variables>
+    <variables>
+        <name>DataRow</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>DataRowCollection</name>
+        <dataType>String</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>EmailSubject</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <value>
+            <stringValue>Available Units for Sale</stringValue>
+        </value>
+    </variables>
+    <variables>
         <name>InputCity</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>Row</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <scale>0</scale>
+    </variables>
+    <variables>
+        <name>TenantRow</name>
+        <dataType>Number</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <scale>0</scale>
+    </variables>
+    <variables>
+        <name>TenantRowData</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
         <isOutput>false</isOutput>
     </variables>
     <variables>
