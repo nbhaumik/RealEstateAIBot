@@ -310,7 +310,7 @@
         <getFirstRecordOnly>false</getFirstRecordOnly>
         <object>Unit__c</object>
         <queriedFields>Id</queriedFields>
-        <queriedFields>Unit_Name__c</queriedFields>
+        <queriedFields>Name</queriedFields>
         <queriedFields>Property_Name__c</queriedFields>
         <queriedFields>Bathrooms__c</queriedFields>
         <queriedFields>Bedrooms__c</queriedFields>
@@ -359,7 +359,6 @@
         <getFirstRecordOnly>false</getFirstRecordOnly>
         <object>Unit__c</object>
         <queriedFields>Id</queriedFields>
-        <queriedFields>Unit_Name__c</queriedFields>
         <queriedFields>Rent_Amount__c</queriedFields>
         <queriedFields>Bedrooms__c</queriedFields>
         <queriedFields>Bathrooms__c</queriedFields>
@@ -387,7 +386,7 @@
         <text>&lt;tr&gt;
 &lt;td style=&quot;{!AllCellsStyle}&quot;&gt;{!Row}&lt;/td&gt;
 &lt;td style=&quot;{!AllCellsStyle}&quot;&gt;{!AvailableUnitLoops.Property_Name__r.Name}&lt;/td&gt;
-&lt;td style=&quot;{!AllCellsStyle}&quot;&gt;{!AvailableUnitLoops.Unit_Name__c}&lt;/td&gt;
+&lt;td style=&quot;{!AllCellsStyle}&quot;&gt;{!AvailableUnitLoops.Name}&lt;/td&gt; 
 &lt;td style=&quot;{!AllCellsStyle}&quot;&gt;{!AvailableUnitLoops.Rent_Amount__c}&lt;/td&gt;
 &lt;td style=&quot;{!AllCellsStyle}&quot;&gt;{!AvailableUnitLoops.Bedrooms__c}&lt;/td&gt;
 &lt;td style=&quot;{!AllCellsStyle}&quot;&gt; {!AvailableUnitLoops.Bathrooms__c}&lt;/td&gt;
@@ -399,8 +398,9 @@
         <isViewedAsPlainText>true</isViewedAsPlainText>
         <text>&lt;tr&gt;
 &lt;td style=&quot;{!AllCellsStyle}&quot;&gt;{!TenantRow}&lt;/td&gt;
-&lt;td style=&quot;{!AllCellsStyle}&quot;&gt;{!Unit_Of_Tenants.Unit__r.Unit_Name__c}&lt;/td&gt;
-&lt;td style=&quot;{!AllCellsStyle}&quot;&gt;{!Unit_Of_Tenants.Present_Leasee__r.Name}&lt;/td&gt;
+&lt;td style=&quot;{!AllCellsStyle}&quot;&gt;{!Unit_Of_Tenants.Unit__r.Name}&lt;/td&gt;
+&lt;td style=&quot;{!AllCellsStyle}&quot;&gt;{!Unit_Of_Tenants.Present_Leasee__r.FirstName} {!Unit_Of_Tenants.Present_Leasee__r.LastName}&lt;/td&gt;
+&lt;td style=&quot;{!AllCellsStyle}&quot;&gt;{!Unit_Of_Tenants.Present_Leasee__r.MobilePhone}&lt;/td&gt; 
 &lt;td style=&quot;{!AllCellsStyle}&quot;&gt;{!Unit_Of_Tenants.Present_Leasee__r.Email}&lt;/td&gt;
 &lt;td style=&quot;{!AllCellsStyle}&quot;&gt;{!Unit_Of_Tenants.Name}&lt;/td&gt;
 &lt;td style=&quot;{!AllCellsStyle}&quot;&gt;{!Unit_Of_Tenants.Agreement_From__c}&lt;/td&gt;
@@ -431,7 +431,11 @@
     <textTemplates>
         <name>EmailBodyData</name>
         <isViewedAsPlainText>true</isViewedAsPlainText>
-        <text>&lt;p&gt;Hi&lt;strong&gt; {!getSalesPerson.Name}&lt;/strong&gt;, Here are the details of the units and tenants that are available of sale in &lt;strong&gt;&lt;em&gt;{!getSalesPerson.Sales_City__c} &lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Units :&lt;/strong&gt; &lt;/p&gt;&lt;p&gt;{!DataTable}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Tenants :&lt;/strong&gt;&lt;/p&gt;&lt;p&gt; {!TenantTable}&lt;/p&gt;</text>
+        <text>&lt;p&gt;Hi&lt;strong&gt; {!getSalesPerson.Name}&lt;/strong&gt;,
+Please find below the details of the units and tenants available for sale &lt;strong&gt;&lt;em&gt;{!getSalesPerson.Sales_City__c} &lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Units :&lt;/strong&gt; &lt;/p&gt;&lt;p&gt;{!DataTable}&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Tenants with Agreements Ending Soon :&lt;/strong&gt;&lt;/p&gt;&lt;p&gt; {!TenantTable}&lt;/p&gt;
+&lt;p&gt;Kindly review the details and proceed with the necessary actions. &lt;/p&gt;
+
+&lt;p&gt;Best regards, &lt;/p&gt;</text>
     </textTemplates>
     <textTemplates>
         <name>TenantHeader</name>
@@ -440,6 +444,7 @@
     &lt;th style=&quot;{!AllCellsStyle}&quot;&gt;#&lt;/th&gt;
    &lt;th style=&quot;{!AllCellsStyle}&quot;&gt;Unit&lt;/th&gt;
    &lt;th style=&quot;{!AllCellsStyle}&quot;&gt;Leasee&lt;/th&gt;
+&lt;th style=&quot;{!AllCellsStyle}&quot;&gt;Leasee Phone&lt;/th&gt;
    &lt;th style=&quot;{!AllCellsStyle}&quot;&gt;Leasee Email&lt;/th&gt;
    &lt;th style=&quot;{!AllCellsStyle}&quot;&gt;Tenant&lt;/th&gt;
    &lt;th style=&quot;{!AllCellsStyle}&quot;&gt;Agreement From&lt;/th&gt;
@@ -536,7 +541,7 @@
         <dataType>SObject</dataType>
         <isCollection>true</isCollection>
         <isInput>false</isInput>
-        <isOutput>true</isOutput>
+        <isOutput>false</isOutput>
         <objectType>Unit__c</objectType>
     </variables>
 </Flow>

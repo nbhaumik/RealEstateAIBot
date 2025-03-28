@@ -3,6 +3,32 @@
     <apiVersion>63.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
     <assignments>
+        <name>Final_Unit_List</name>
+        <label>Final Unit List</label>
+        <locationX>50</locationX>
+        <locationY>782</locationY>
+        <assignmentItems>
+            <assignToReference>FinalUnits</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Filter_units_by_Properties</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>Final_Unit_List_2</name>
+        <label>Final Unit List 2</label>
+        <locationX>578</locationX>
+        <locationY>782</locationY>
+        <assignmentItems>
+            <assignToReference>FinalUnits</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>Filter_bathroom_units_by_Properties</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
         <name>RelatedUnitData</name>
         <label>RelatedUnitData</label>
         <locationX>182</locationX>
@@ -34,23 +60,52 @@
             <targetReference>Copy_1_of_Checking_Property_Name</targetReference>
         </connector>
     </assignments>
+    <assignments>
+        <name>Unfilterd_Final_Units</name>
+        <label>Unfilterd Final Units</label>
+        <locationX>842</locationX>
+        <locationY>566</locationY>
+        <assignmentItems>
+            <assignToReference>FinalUnits</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>UnitRecords</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <assignments>
+        <name>Unfilterd_Final_Units_2</name>
+        <label>Unfilterd Final Units 2</label>
+        <locationX>314</locationX>
+        <locationY>566</locationY>
+        <assignmentItems>
+            <assignToReference>FinalUnits</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>UnitRecords</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
     <collectionProcessors>
-        <name>Copy_1_of_Filter_units_by_Properties</name>
+        <name>Filter_bathroom_units_by_Properties</name>
         <elementSubtype>FilterCollectionProcessor</elementSubtype>
-        <label>Copy 1 of Filter units by Properties</label>
+        <label>Filter bathroom units by Properties</label>
         <locationX>578</locationX>
         <locationY>674</locationY>
-        <assignNextValueToReference>currentItem_Filter_units_by_Properties</assignNextValueToReference>
+        <assignNextValueToReference>currentItem_Copy_1_of_Filter_units_by_Properties</assignNextValueToReference>
         <collectionProcessorType>FilterCollectionProcessor</collectionProcessorType>
         <collectionReference>GetUnitWithBathRoomRecords</collectionReference>
         <conditionLogic>and</conditionLogic>
         <conditions>
-            <leftValueReference>currentItem_Filter_units_by_Properties.Property_Name__c</leftValueReference>
+            <leftValueReference>currentItem_Copy_1_of_Filter_units_by_Properties.Property_Name__c</leftValueReference>
             <operator>EqualTo</operator>
             <rightValue>
                 <elementReference>Copy_2_of_Get_Property_ID.Id</elementReference>
             </rightValue>
         </conditions>
+        <connector>
+            <targetReference>Final_Unit_List_2</targetReference>
+        </connector>
     </collectionProcessors>
     <collectionProcessors>
         <name>Filter_units_by_Properties</name>
@@ -58,23 +113,29 @@
         <label>Filter units by Properties</label>
         <locationX>50</locationX>
         <locationY>674</locationY>
-        <assignNextValueToReference>currentItem_Filter_units_by_Properties</assignNextValueToReference>
+        <assignNextValueToReference>currentItem_Copy_1_of_Filter_units_by_Properties</assignNextValueToReference>
         <collectionProcessorType>FilterCollectionProcessor</collectionProcessorType>
         <collectionReference>GetUnitWithBedRoomRecords</collectionReference>
         <conditionLogic>and</conditionLogic>
         <conditions>
-            <leftValueReference>currentItem_Filter_units_by_Properties.Property_Name__c</leftValueReference>
+            <leftValueReference>currentItem_Copy_1_of_Filter_units_by_Properties.Property_Name__c</leftValueReference>
             <operator>EqualTo</operator>
             <rightValue>
                 <elementReference>Get_Property_ID.Id</elementReference>
             </rightValue>
         </conditions>
+        <connector>
+            <targetReference>Final_Unit_List</targetReference>
+        </connector>
     </collectionProcessors>
     <decisions>
         <name>Checking_Property_Name</name>
         <label>Checking Property Name</label>
         <locationX>182</locationX>
         <locationY>458</locationY>
+        <defaultConnector>
+            <targetReference>Unfilterd_Final_Units_2</targetReference>
+        </defaultConnector>
         <defaultConnectorLabel>Property Not Present</defaultConnectorLabel>
         <rules>
             <name>Property_Present</name>
@@ -97,6 +158,9 @@
         <label>Copy 1 of Checking Property Name</label>
         <locationX>710</locationX>
         <locationY>458</locationY>
+        <defaultConnector>
+            <targetReference>Unfilterd_Final_Units</targetReference>
+        </defaultConnector>
         <defaultConnectorLabel>Property Not Present</defaultConnectorLabel>
         <rules>
             <name>Property_Present_2</name>
@@ -180,7 +244,7 @@
         <locationY>566</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Copy_1_of_Filter_units_by_Properties</targetReference>
+            <targetReference>Filter_bathroom_units_by_Properties</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -286,11 +350,19 @@
     </start>
     <status>Active</status>
     <variables>
-        <name>currentItem_Filter_units_by_Properties</name>
+        <name>currentItem_Copy_1_of_Filter_units_by_Properties</name>
         <dataType>SObject</dataType>
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>false</isOutput>
+        <objectType>Unit__c</objectType>
+    </variables>
+    <variables>
+        <name>FinalUnits</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
         <objectType>Unit__c</objectType>
     </variables>
     <variables>
@@ -320,7 +392,7 @@
         <dataType>SObject</dataType>
         <isCollection>true</isCollection>
         <isInput>false</isInput>
-        <isOutput>true</isOutput>
+        <isOutput>false</isOutput>
         <objectType>Unit__c</objectType>
     </variables>
 </Flow>

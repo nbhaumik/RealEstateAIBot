@@ -5,8 +5,8 @@
     <assignments>
         <name>Agreement_List</name>
         <label>Agreement List</label>
-        <locationX>264</locationX>
-        <locationY>458</locationY>
+        <locationX>270</locationX>
+        <locationY>1166</locationY>
         <assignmentItems>
             <assignToReference>AgreementsExceeding11Months</assignToReference>
             <operator>Add</operator>
@@ -18,11 +18,43 @@
             <targetReference>Tenant_Loop</targetReference>
         </connector>
     </assignments>
+    <assignments>
+        <name>All_Tenant_Assignment</name>
+        <label>All Tenant Assignment</label>
+        <locationX>314</locationX>
+        <locationY>350</locationY>
+        <assignmentItems>
+            <assignToReference>TenantList</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>Get_Tenant_Agreement</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Tenant_Loop</targetReference>
+        </connector>
+    </assignments>
+    <assignments>
+        <name>Property_Related_Tenant_Assignment</name>
+        <label>Property Related Tenant Assignment</label>
+        <locationX>138</locationX>
+        <locationY>674</locationY>
+        <assignmentItems>
+            <assignToReference>TenantList</assignToReference>
+            <operator>Add</operator>
+            <value>
+                <elementReference>Get_Related_Tenant_Recs</elementReference>
+            </value>
+        </assignmentItems>
+        <connector>
+            <targetReference>Unit_Loop</targetReference>
+        </connector>
+    </assignments>
     <decisions>
         <name>AgreementOverAnYear</name>
         <label>AgreementOverAnYear</label>
-        <locationX>396</locationX>
-        <locationY>350</locationY>
+        <locationX>402</locationX>
+        <locationY>1058</locationY>
         <defaultConnector>
             <targetReference>Tenant_Loop</targetReference>
         </defaultConnector>
@@ -37,17 +69,35 @@
                     <booleanValue>true</booleanValue>
                 </rightValue>
             </conditions>
-            <conditions>
-                <leftValueReference>AgreemnetEndNoInCurrentMonth</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
             <connector>
                 <targetReference>Agreement_List</targetReference>
             </connector>
             <label>Is Agreement For 11 months</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Input</name>
+        <label>Check Input</label>
+        <locationX>182</locationX>
+        <locationY>134</locationY>
+        <defaultConnector>
+            <targetReference>Get_Tenant_Agreement</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>If_Input</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>InputProperty</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>get_Input_Property_Recs</targetReference>
+            </connector>
+            <label>If Input</label>
         </rules>
     </decisions>
     <environments>Default</environments>
@@ -57,28 +107,32 @@
         <expression>( YEAR({!Tenant_Loop.Agreement_Upto__c}) - YEAR({!Tenant_Loop.Agreement_From__c}) ) * 12 
 + ( MONTH({!Tenant_Loop.Agreement_Upto__c}) - MONTH({!Tenant_Loop.Agreement_From__c}) ) &gt; 11</expression>
     </formulas>
-    <formulas>
-        <name>AgreemnetEndNoInCurrentMonth</name>
-        <dataType>Boolean</dataType>
-        <expression>NOT(
-    AND(
-        YEAR({!Tenant_Loop.Agreement_Upto__c}) = YEAR(TODAY()),
-        MONTH({!Tenant_Loop.Agreement_Upto__c}) = MONTH(TODAY())
-    )
-)</expression>
-    </formulas>
     <interviewLabel>Agreements Exceeding 11 months {!$Flow.CurrentDateTime}</interviewLabel>
     <label>Agreements Exceeding 11 months</label>
     <loops>
         <name>Tenant_Loop</name>
         <label>Tenant Loop</label>
-        <locationX>176</locationX>
-        <locationY>242</locationY>
-        <collectionReference>Get_Tenant_Agreement</collectionReference>
+        <locationX>182</locationX>
+        <locationY>950</locationY>
+        <collectionReference>TenantList</collectionReference>
         <iterationOrder>Asc</iterationOrder>
         <nextValueConnector>
             <targetReference>AgreementOverAnYear</targetReference>
         </nextValueConnector>
+    </loops>
+    <loops>
+        <name>Unit_Loop</name>
+        <label>Unit Loop</label>
+        <locationX>50</locationX>
+        <locationY>458</locationY>
+        <collectionReference>Get_Related_Unit</collectionReference>
+        <iterationOrder>Asc</iterationOrder>
+        <nextValueConnector>
+            <targetReference>Get_Related_Tenant_Recs</targetReference>
+        </nextValueConnector>
+        <noMoreValuesConnector>
+            <targetReference>Tenant_Loop</targetReference>
+        </noMoreValuesConnector>
     </loops>
     <processMetadataValues>
         <name>BuilderType</name>
@@ -100,13 +154,98 @@
     </processMetadataValues>
     <processType>AutoLaunchedFlow</processType>
     <recordLookups>
-        <name>Get_Tenant_Agreement</name>
-        <label>Get Tenant Agreement</label>
-        <locationX>176</locationX>
-        <locationY>134</locationY>
+        <name>get_Input_Property_Recs</name>
+        <label>get Input Property Recs</label>
+        <locationX>50</locationX>
+        <locationY>242</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Tenant_Loop</targetReference>
+            <targetReference>Get_Related_Unit</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Name</field>
+            <operator>Contains</operator>
+            <value>
+                <elementReference>InputProperty</elementReference>
+            </value>
+        </filters>
+        <object>Property__c</object>
+        <outputAssignments>
+            <assignToReference>PropertyId</assignToReference>
+            <field>Id</field>
+        </outputAssignments>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Related_Tenant_Recs</name>
+        <label>Get Related Tenant Recs</label>
+        <locationX>138</locationX>
+        <locationY>566</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Property_Related_Tenant_Assignment</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Unit__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Unit_Loop.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Agreement_From__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Agreement_Upto__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Tenant_Info__c</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>Name</queriedFields>
+        <queriedFields>Unit__c</queriedFields>
+        <queriedFields>Present_Leasee__c</queriedFields>
+        <queriedFields>Agreement_From__c</queriedFields>
+        <queriedFields>Agreement_Upto__c</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Related_Unit</name>
+        <label>Get Related Unit</label>
+        <locationX>50</locationX>
+        <locationY>350</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Unit_Loop</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Property_Name__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>PropertyId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>false</getFirstRecordOnly>
+        <object>Unit__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Tenant_Agreement</name>
+        <label>Get Tenant Agreement</label>
+        <locationX>314</locationX>
+        <locationY>242</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>All_Tenant_Assignment</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -135,13 +274,13 @@
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
     <start>
-        <locationX>50</locationX>
+        <locationX>56</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Get_Tenant_Agreement</targetReference>
+            <targetReference>Check_Input</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
     <variables>
         <name>AgreementsExceeding11Months</name>
         <dataType>SObject</dataType>
@@ -151,10 +290,32 @@
         <objectType>Tenant_Info__c</objectType>
     </variables>
     <variables>
+        <name>InputProperty</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
         <name>isAgreementExceeding</name>
         <dataType>Boolean</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>
         <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>PropertyId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>TenantList</name>
+        <dataType>SObject</dataType>
+        <isCollection>true</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <objectType>Tenant_Info__c</objectType>
     </variables>
 </Flow>
