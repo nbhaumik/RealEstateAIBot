@@ -1,9 +1,34 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
 	<types>
-		<members>Case.Solution_Cost__c</members>
-		<members>Tenant_Info__c.Looking_For_Renewal__c</members>
-		<name>CustomField</name>
+		<members>*</members>
+		<name>PermissionSet</name>
+	</types>
+	<types>
+		<members>force__AgentforceServiceAgentUserPsg</members>
+		<members>force__Commerce_Shopper</members>
+		<members>force__CopilotSalesforceAdminPSG</members>
+		<members>force__CopilotSalesforceUserPSG</members>
+		<members>force__Enablement_Admin</members>
+		<members>force__Enablement_Resources_Manager</members>
+		<members>force__Enablement_User</members>
+		<members>force__Partner_Enablement_User</members>
+		<members>force__SubscriptionManagementBillingAdmin</members>
+		<members>force__SubscriptionManagementBillingOperations</members>
+		<members>force__SubscriptionManagementBuyerIntegrationUser</members>
+		<members>force__SubscriptionManagementCollections</members>
+		<members>force__SubscriptionManagementCreditMemoAdjustmentsOperations</members>
+		<members>force__SubscriptionManagementPaymentAdministrator</members>
+		<members>force__SubscriptionManagementPaymentOperations</members>
+		<members>force__SubscriptionManagementProductAndPricingAdmin</members>
+		<members>force__SubscriptionManagementSalesOperationsRep</members>
+		<members>force__SubscriptionManagementSalesRep</members>
+		<members>force__SubscriptionManagementTaxAdmin</members>
+		<name>PermissionSetGroup</name>
+	</types>
+	<types>
+		<members>*</members>
+		<name>Profile</name>
 	</types>
 	<version>63.0</version>
 </Package>
